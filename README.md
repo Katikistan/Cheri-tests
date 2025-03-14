@@ -28,15 +28,15 @@ docker start cheribsd-riscv
 ## Compiling cheri programs
 To compile a program using the cheri enabled compiler, use clang compiler found in the docker container in `/opt/cheri/output/sdk/bin/clang`. 
 We set the following compile flags:
-``-g``:
-``-O2``:
-``--sysroot=/opt/cheri/output/rootfs-riscv64-purecap``:
-``-target riscv64-unknown-freebsd``:
-``-static``:
-``-fuse-ld=lld``:
-``-mno-relax``:
-``-march=rv64gcxcheri``:
-``-mabi=l64pc128d``:
-``-Wall``:
-``-Wcheri``: 
-``-G0``:
+- ``-g``:
+- ``-O2``:
+- ``--sysroot=/opt/cheri/output/rootfs-riscv64-purecap``:
+- ``-target riscv64-unknown-freebsd``:
+- ``-static``:
+- ``-fuse-ld=lld``:
+- ``-mno-relax``:
+- ``-march=rv64gcxcheri``:
+- ``-mabi=l64pc128d``:
+- ``-Wall``:
+- ``-Wcheri``: 
+- ``-G0``:

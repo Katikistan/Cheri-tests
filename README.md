@@ -48,7 +48,6 @@ The VM we use to run programs has easy setup to mount the ``opt/cheri/`` folder 
 ````
 mkdir cheri_programs
 ````
-
 **Envoke the compiler:**
 ````
 /opt/cheri/output/sdk/bin/clang -g -O2 \
@@ -59,15 +58,17 @@ mkdir cheri_programs
     -Wall -Wcheri -G0 \
     home/file.c -o hello_world
 ````
-
 # QUEMU CHERIBSD VM
 The CHERIBSD VM is very barebones and is quite slow when running it in a docker container, therefore we use it only for executing programs we have compiled. 
-make folders opt/cheri to mirror the container (only do this one time)
+
+To start the vm make sure that the docker container is running, then in a new terminal run 
+````
+docker exec -ti cheribsd-riscv /opt/cheri/cheribuild/cheribuild.py run-riscv64-purecap
+````
+Make folders opt/cheri to mirror the container (only do this one time)
 ````
 mkdir -p /opt/cheri
 ````
-
-
 First mount the containers opt folder 
 ````
 mount_smbfs -I 10.0.2.4 -N //10.0.2.4/source_root /opt/cheri
@@ -82,7 +83,6 @@ Run the program
 ````
 /opt/cheri/programs/hello_world
 ````
-
 **If you exit the VM and want to start the VM again you have to also restart the docker container by exiting the container 
 
 

@@ -5,9 +5,9 @@ Testing CHERI functionality
 We use a docker container containing the cheri toolchain, that includes an sdk, quemu and cheribsd.
 
 To pull the container run the following command:
-```
+````
 docker pull ctsrd/cheribsd-sdk-qemu-riscv64-purecap
-```
+````
 Start the container
 ````
 docker run -ti -d --name cheribsd-riscv ctsrd/cheribsd-sdk-qemu-riscv64-purecap:latest
@@ -21,12 +21,9 @@ This provides a shell that can be used to compile programmes.
 To exit the container, type ``exit``.
 
 This will stop the container. If we wan't to use the container again make sure to start the container agian.
-``
+````
 docker start cheribsd-riscv
-``
-
-To exit the container simply type ``exit`` in the shell 
-
+````
 ## Compiling cheri programs
 To compile a program using the cheri enabled compiler, use clang compiler found in the docker container in `/opt/cheri/output/sdk/bin/clang`. 
 We set the following compile flags:
@@ -43,14 +40,14 @@ We set the following compile flags:
 - ``-Wcheri``: CHERI-specific warnings
 - ``-G0``
 We have opted to cross compile our programs in the container, you can either install a text editor in the container or copy a program into the container.
-``
+````
 docker cp path/to/file.c cheribsd-riscv:/opt/cheri//file.c
-``
+````
 The VM we use to run programs has easy setup to mount the ``opt/cheri/`` folder to the VM, therefore it could be an idea to place programs in that folder, preferably in a new folder for programs:
 
-``
+````
 mkdir cheri_programs
-``
+````
 
 **Envoke the compiler:**
 ````
@@ -66,22 +63,25 @@ mkdir cheri_programs
 # QUEMU CHERIBSD VM
 The CHERIBSD VM is very barebones and is quite slow when running it in a docker container, therefore we use it only for executing programs we have compiled. 
 make folders opt/cheri to mirror the container (only do this one time)
-``
+````
 mkdir -p /opt/cheri
-``
+````
 
 
 First mount the containers opt folder 
-``
+````
 mount_smbfs -I 10.0.2.4 -N //10.0.2.4/source_root /opt/cheri
-``
+````
 This will mount the opt/cheri/ folder in the container to opt/cheri in the VM, meaning the programs can be found in that folder also
 
 Make the program executable
+````
 chmod +x /opt/cheri/programs/hello_world
-
+````
 Run the program
+````
 /opt/cheri/programs/hello_world
+````
 
 **If you exit the VM and want to start the VM again you have to also restart the docker container by exiting the container 
 

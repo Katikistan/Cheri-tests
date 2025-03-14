@@ -25,18 +25,67 @@ This will stop the container. If we wan't to use the container again make sure t
 docker start cheribsd-riscv
 ``
 
+To exit the container simply type ``exit`` in the shell 
+
 ## Compiling cheri programs
 To compile a program using the cheri enabled compiler, use clang compiler found in the docker container in `/opt/cheri/output/sdk/bin/clang`. 
 We set the following compile flags:
-- ``-g``:
-- ``-O2``:
-- ``--sysroot=/opt/cheri/output/rootfs-riscv64-purecap``:
-- ``-target riscv64-unknown-freebsd``:
-- ``-static``:
-- ``-fuse-ld=lld``:
-- ``-mno-relax``:
-- ``-march=rv64gcxcheri``:
-- ``-mabi=l64pc128d``:
-- ``-Wall``:
-- ``-Wcheri``: 
-- ``-G0``:
+- ``-g`` 
+- ``-O2``
+- ``--sysroot=/opt/cheri/output/rootfs-riscv64-purecap``: The sysroot folder needs to be specified, the compiler have trouble finding it otherwise
+- ``-target riscv64-unknown-freebsd``: we are targeting riscv64 cheribsd
+- ``-static``: Generates a statically linked binary 
+- ``-fuse-ld=lld``: Uses LLVM's lld linker, which is needed for CHERI capability-aware linking
+- ``-mno-relax``: Disables link-time relaxation optimizations, which seems to be problematic sometimes with CHERI.
+- ``-march=rv64gcxcheri``: Targets 64-bit RISC-V with extensions and includes CHERI extensions.
+- ``-mabi=l64pc128d``: pc tells the compiler to use 128-bit capabilities for pointers (CHERI Pure Capability mode, the VM is purecap).
+- ``-Wall``
+- ``-Wcheri``: CHERI-specific warnings
+- ``-G0``
+We have opted to cross compile our programs in the container, you can either install a text editor in the container or copy a program into the container.
+``
+docker cp path/to/file.c cheribsd-riscv:/opt/cheri//file.c
+``
+The VM we use to run programs has easy setup to mount the ``opt/cheri/`` folder to the VM, therefore it could be an idea to place programs in that folder, preferably in a new folder for programs:
+
+``
+mkdir cheri_programs
+``
+
+**Envoke the compiler:**
+````
+/opt/cheri/output/sdk/bin/clang -g -O2 \
+    --sysroot=/opt/cheri/output/rootfs-riscv64-purecap \
+    -target riscv64-unknown-freebsd \
+    -static -fuse-ld=lld -mno-relax \
+    -march=rv64gcxcheri -mabi=l64pc128d \
+    -Wall -Wcheri -G0 \
+    home/file.c -o hello_world
+````
+
+# QUEMU CHERIBSD VM
+The CHERIBSD VM is very barebones and is quite slow when running it in a docker container, therefore we use it only for executing programs we have compiled. 
+make folders opt/cheri to mirror the container (only do this one time)
+``
+mkdir -p /opt/cheri
+``
+
+
+First mount the containers opt folder 
+``
+mount_smbfs -I 10.0.2.4 -N //10.0.2.4/source_root /opt/cheri
+``
+This will mount the opt/cheri/ folder in the container to opt/cheri in the VM, meaning the programs can be found in that folder also
+
+Make the program executable
+chmod +x /opt/cheri/programs/hello_world
+
+Run the program
+/opt/cheri/programs/hello_world
+
+**If you exit the VM and want to start the VM again you have to also restart the docker container by exiting the container 
+
+
+
+
+

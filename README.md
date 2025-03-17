@@ -1,5 +1,32 @@
 # Cheri-tests
 Testing CHERI functionality
+# How to use
+We have provided a Makefile that compiles a program in the container. The simple way to use the Makefile is using the following command
+````
+make PROGRAM=name_of_your_file_without.c
+````
+then to run the program, start the VM. To start the vm make sure that the docker container is running, then in a new terminal run
+````
+docker exec -ti cheribsd-riscv /opt/cheri/cheribuild/cheribuild.py run-riscv64-purecap
+````
+Make folders opt/cheri to mirror the container (only do this one time)
+````
+mkdir -p /opt/cheri
+````
+First mount the containers opt folder 
+````
+mount_smbfs -I 10.0.2.4 -N //10.0.2.4/source_root /opt/cheri
+````
+This will mount the opt/cheri/ folder in the container to opt/cheri in the VM, meaning the programs can be found in that folder also
+
+Make the program executable
+````
+chmod +x /opt/cheri/programs/hello_world
+````
+Run the program
+````
+./opt/cheri/programs/hello_world
+````
 
 ## Docker container
 We use a docker container containing the cheri toolchain, that includes an sdk, quemu and cheribsd.
@@ -81,7 +108,7 @@ chmod +x /opt/cheri/programs/hello_world
 ````
 Run the program
 ````
-/opt/cheri/programs/hello_world
+./opt/cheri/programs/hello_world
 ````
 **If you exit the VM and want to start the VM again you have to also restart the docker container by exiting the container 
 

@@ -1,29 +1,24 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <cheriintrin.h> // Add this line
+#include <cheriintrin.h> // Include this header before cheri.h to avoid issues with macros
 #include <cheri/cheri.h>
 
-
 int main() {
-    // Allocate memory for an array of 10 integers
-    int * __capability cap_array;
-    int *array = malloc(10 * sizeof(int));
+    int * __capability cap_ptr;
+    int *ptr = malloc(sizeof(int));
 
-    // Initialize the array
-    for (int i = 0; i < 10; i++) {
-        array[i] = i;
-    }
+    *ptr = 42;
 
-    // Create a capability for the allocated memory with load permission
-    cap_array = (int * __capability)cheri_perms_and(array, CHERI_PERM_LOAD);
+    // Create a capability for the allocated memory with load and store permissions
+    cap_ptr = (int* __capability)cheri_perms_and(ptr, CHERI_PERM_LOAD);
 
+    // Access and modify the value through the capability
+    printf("Value before: %d\n", *ptr);
+    printf("ptr %#p\n", cap_ptr);
+    *cap_ptr = 84;
+    printf("Value after: %d\n", *ptr);
 
-    // Attempt to access an out-of-bounds element
-    // This will cause a capability violation
-    printf("Out-of-bounds access: %d\n", cap_array[10]);
-
-    // Free the allocated memory
-    free(array);
+    free(ptr);
 
     return EXIT_SUCCESS;
 }

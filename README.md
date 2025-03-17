@@ -28,6 +28,8 @@ Run the program
 ./opt/cheri/programs/hello_world
 ````
 
+**for an efficent workflow keep your VM running and use the Makefile to compile new programs that can be tested in the VM
+
 ## Docker container
 We use a docker container containing the cheri toolchain, that includes an sdk, quemu and cheribsd.
 

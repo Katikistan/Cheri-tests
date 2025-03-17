@@ -15,7 +15,7 @@ OUT=$(PROGRAM)
 
 .PHONY: all run clean start-container stop-container
 
-all: start-container transfer compile transfer-vm run-vm
+all: start-container transfer compile 
 
 start-container:
 	docker start $(CONTAINER_NAME) || docker run -ti -d --name $(CONTAINER_NAME) $(DOCKER_IMAGE)
